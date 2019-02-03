@@ -1,0 +1,22 @@
+{
+  "name": "eth-proxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "blockchain_proxy/ethereum/node_server.js",
+  "scripts": {
+    "test": "node blockchain_proxy/ethereum/node_server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethereumjs-tx": "^1.3.7",
+    "express": "^4.16.4",
+    "node-async-loop": "^1.2.2",
+    "promise-request": "^0.1.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "solc": "^0.4.24",
+    "web3": "^1.0.0-beta.37",
+    "winston": "^3.1.0"
+  }
+}

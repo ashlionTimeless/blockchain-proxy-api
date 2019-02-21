@@ -204,7 +204,7 @@ http://127.0.0.1:3000/admin-sent
                 	var data = this.processRequestData(request);
                 	var user_address = data.user_address;
                 	this.validator.validateEthAddress(user_address,'User Address');
-                    var result = this.formatToDecimals(await this.getSingleBalance(user_address));
+                    var result = await this.getSingleBalance(user_address);
                     return this.processResponseData(response,true,result);
                 }catch(e)
                 {
@@ -215,16 +215,11 @@ http://127.0.0.1:3000/admin-sent
 
             app.post('/transfer-tokens-out', async (request, response) => {
                 try{
-
 	                var data = this.processRequestData(request);
-			console.log(data);
-	                var user_address = data.address;
-	                var amount = this.formatFromDecimals(data.amount);
-			amount = this.web3.utils.toHex(amount);
-			console.log(amount,user_address);
+	                var user_address = data.user_address;
+	                var amount = data.amount;
                     var result = await this.transferTokens(amount,user_address);
-			return response.send({result:true,data:result});
-//                    return this.processResponseData(response,true,result)
+                    return this.processResponseData(response,true,result)
                 }catch(e){
                 	this.logger.logError(ETH_PROXY_SUBJECT,e);
                     return this.processResponseData(response,false,e.message);
@@ -235,7 +230,7 @@ http://127.0.0.1:3000/admin-sent
                 try{
 	                var data = this.processRequestData(request);
 	                var user_address = data.user_address;
-	                var amount = this.formatFromDecimals(data.amount);
+	                var amount = data.amount;
 	                var privateKey = data.privateKey;
                     var result = await this.transferTokens(amount,this.admin.address,user_address,privateKey);
                     return this.processResponseData(response,true,result)
@@ -480,7 +475,16 @@ curl --data "data"="[{\"user_id\":1,\"address\":\"0x50b97997ec3c1f8f8aDC81E603f2
             try{
             	if(to_address==undefined){
             		to_address=this.admin.address;
-            	}
+            	}function formatToDecimals(amount)
+        {
+            return amount/Math.pow(10,18).toFixed(8);
+        }
+
+function formatFromDecimals(amount)
+        {
+    amount=parseFloat(amount);
+    return amount*Math.pow(10,18).toFixed(5);
+};
             	if(privateKey==undefined){
 	                privateKey = this.admin.key;            		
             	}
@@ -551,7 +555,7 @@ curl --data "data"="[{\"user_id\":1,\"address\":\"0x50b97997ec3c1f8f8aDC81E603f2
                         balances[key]={};
                     }
                     balances[key][wallet.address]={'user_id':key,'tokens':0};
-                    balances[key][wallet.address].tokens=this.formatToDecimals(await this.getSingleBalance(wallet.address));
+                    balances[key][wallet.address].tokens=await this.getSingleBalance(wallet.address);
                     //balances[key][wallet.address].eth = await this.web3.eth.getBalance(wallet.address);
                     next();
                 }catch(e){
@@ -584,15 +588,20 @@ curl --data "data"="[{\"user_id\":1,\"address\":\"0x50b97997ec3c1f8f8aDC81E603f2
         }
     }
 formatToDecimals(amount)
-        {
-            return amount/Math.pow(10,18).toFixed(8);
-        }
+{
+    return amount/Math.pow(10,18);
+}
 
 formatFromDecimals(amount)
-        {
-    amount=parseFloat(amount);
-    return amount*Math.pow(10,18).toFixed(8);
-};
+{
+    if(amount.indexOf(',')>0)
+    {
+        amount=amount.replace(',', '.');
+        amount=parseFloat(amount);
+    }
+    return amount*Math.pow(10,18).toFixed(5);
+}
+
         makeTransaction(params)
     {
         return new Promise(async (resolve,reject)=>

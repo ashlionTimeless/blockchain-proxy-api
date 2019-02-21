@@ -17,21 +17,21 @@ class httpService{
         // }
         try{
             this.validator.validate(req_url,'url');
-            this.validator.validateObject(data,'Request Data');
-            data = {data:JSON.stringify(data)};
+            //this.validator.validateObject(data,'Service Request Data');
+            //data = {data:JSON.stringify(data)};
 
             console.log(req_url);
             console.log(data);
 
             var options={
                 uri:req_url,
-                form:data,
+                body:data,
                 method: 'POST',
                 // headers: {
                 //     'Content-Type': 'application/x-www-form-urlencoded',
                 // }
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'application/json',
                 }
                 ,json:true
             };
@@ -53,11 +53,11 @@ class httpService{
     getRequest(req_url,data,protocolCompliant=true) {
         try{
             this.validator.validate(req_url,'url');
-            this.validator.validateObject(data,'Request Data');
-            data = {data:JSON.stringify(data)};
+//            this.validator.validateObject(data,'Request Data');
+  //          data = {data:JSON.stringify(data)};
             var options={
                 uri:req_url,
-                form:data,
+                body:data,
                 method: 'GET',
                 json:true
             };

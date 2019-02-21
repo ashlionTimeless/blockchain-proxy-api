@@ -4,11 +4,13 @@
   "description": "",
   "main": "blockchain_proxy/ethereum/node_server.js",
   "scripts": {
-    "test": "node blockchain_proxy/ethereum/node_server.js"
+    "start": "node blockchain_proxy/ethereum/node_server.js",
+    "test": "node node_start.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "keythereum":"^1.0.4",
     "ethereumjs-tx": "^1.3.7",
     "express": "^4.16.4",
     "node-async-loop": "^1.2.2",
@@ -16,6 +18,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "solc": "^0.4.24",
+    "truffle": "^5.0.2",
     "web3": "^1.0.0-beta.37",
     "winston": "^3.1.0"
   }
